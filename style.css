@@ -58,3 +58,18 @@ footer p{margin:6px 0}
   h1{font-size:20px}
   .row{padding:12px}
 }
+
+.quick{display:flex; gap:6px; flex-wrap:wrap; margin:6px 0}
+.quick-btn{
+  font-size:12.5px; padding:6px 10px; border-radius:999px; border:1px solid var(--line);
+  background:var(--card); color:var(--fg); cursor:pointer; text-decoration:none; white-space:nowrap;
+}
+.quick-btn:hover{background:var(--accent-soft); color:var(--accent)}
+.quick-btn.on{background:var(--accent); color:#fff; border-color:var(--accent)}
+.fav{color:var(--accent); font-size:11px; margin-left:4px}
+.toast{
+  position:fixed; left:50%; bottom:96px; transform:translateX(-50%);
+  background:rgba(0,0,0,.82); color:#fff; font-size:13px; padding:9px 16px;
+  border-radius:999px; z-index:60; opacity:0; transition:opacity .2s; pointer-events:none;
+}
+.toast.show{opacity:1}

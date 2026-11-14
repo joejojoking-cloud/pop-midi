@@ -16,6 +16,12 @@
   <div class="search-row">
     <input id="q" type="search" placeholder="搜索歌名或歌手，例如 说散就散 / 周杰伦 / 成都" autocomplete="off" spellcheck="false">
   </div>
+  <div class="quick">
+    <button id="randomBtn" class="quick-btn">🎲 随机听一首</button>
+    <button id="favBtn" class="quick-btn">★ 我的收藏</button>
+    <a class="quick-btn" href="https://connect-ai.feishu.cn/share/base/shrcnXHJ1qjIXHEcQua9Q71SNoh" target="_blank" rel="noopener">许愿 / 报错</a>
+    <button id="shareBtn" class="quick-btn">分享本站</button>
+  </div>
   <div class="filters">
     <select id="region">
       <option value="">全部地区</option>
@@ -27,7 +33,7 @@
       <option value="其他">其他</option>
     </select>
     <select id="artist"><option value="">全部歌手</option></select>
-    <select id="sort">
+    <select id="sort" aria-label="排序">
       <option value="dl">按时长降序</option>
       <option value="t">按歌名</option>
       <option value="a">按歌手</option>
@@ -64,6 +70,6 @@
   <p>浏览器内用 SoundFont 实时合成，手机上建议戴耳机。若下载按钮没反应，点右上角「···」→「在浏览器打开」。</p>
 </footer>
 
-<script src="app.js?v=1"></script>
+<script src="app.js?v=2"></script>
 </body>
 </html>

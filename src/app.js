@@ -107,6 +107,7 @@ function matches(x) {
   const q = $("q").value.trim().toLowerCase();
   if ($("region").value && x.r !== $("region").value) return false;
   if ($("artist").value && x.a !== $("artist").value) return false;
+  if (favOnly && !getFavs().has(x.id)) return false;
   if (q) {
     const hay = `${x.t} ${x.a}`.toLowerCase();
     if (!q.split(/\s+/).every((w) => hay.includes(w))) return false;
@@ -146,6 +147,7 @@ function rowFor(x) {
       <div class="sub">${esc(x.a)} · ${esc(x.r)} · ${fmt(x.d)} · ${x.k} KB</div>
     </div>
     <div class="acts">
+      <button class="play" data-fav="${x.id}" aria-label="收藏" style="background:transparent;color:var(--muted);border:none;font-size:15px">${getFavs().has(x.id) ? "★" : "☆"}</button>
       <button class="play" data-play="${x.id}" aria-label="播放">▶</button>
       <a class="dl" href="midi/${x.f}" download="${esc(x.a + " - " + x.t)}.mid">下载</a>
     </div>`;
@@ -155,6 +157,8 @@ function rowFor(x) {
 
 /* ---------- 交互 ---------- */
 $("list").addEventListener("click", async (e) => {
+  const favBtn = e.target.closest("[data-fav]");
+  if (favBtn) { toggleFav(favBtn.dataset.fav, e); favBtn.classList.toggle("faved"); return; }
   const btn = e.target.closest("[data-play]");
   if (!btn) return;
   const x = state.all.find((v) => v.id === btn.dataset.play);
@@ -241,6 +245,70 @@ seekEl.addEventListener("pointerup", finishSeek);
 document.addEventListener("pointerup", finishSeek, true);
 document.addEventListener("mouseup", finishSeek, true);
 seekEl.addEventListener("pointercancel", () => { state.dragging = false; });
+
+/* ---------- 收藏 / 随机 / 分享 ---------- */
+const FAV_KEY = "pop909-favs";
+const getFavs = () => { try { return new Set(JSON.parse(localStorage.getItem(FAV_KEY) || "[]")); } catch { return new Set(); } };
+const setFavs = (s2) => { try { localStorage.setItem(FAV_KEY, JSON.stringify([...s2])); } catch {} };
+let favOnly = false;
+
+function toast(msg) {
+  let t = document.querySelector(".toast");
+  if (!t) { t = document.createElement("div"); t.className = "toast"; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._h);
+  toast._h = setTimeout(() => t.classList.remove("show"), 1800);
+}
+
+$("favBtn").addEventListener("click", () => {
+  favOnly = !favOnly;
+  $("favBtn").classList.toggle("on", favOnly);
+  apply();
+  toast(favOnly ? `只看收藏（${getFavs().size} 首）` : "显示全部");
+});
+
+$("randomBtn").addEventListener("click", async () => {
+  const pool = state.view.length ? state.view : state.all;
+  if (!pool.length) return;
+  const x = pool[Math.floor(Math.random() * pool.length)];
+  // 滚到该行并播放
+  let li = [...document.querySelectorAll("#list .row")].find((el) => el.querySelector("[data-play]")?.dataset.play === x.id);
+  if (!li) {
+    state.shown = state.view.length; // 先把剩余渲染出来
+    renderMore();
+    li = [...document.querySelectorAll("#list .row")].find((el) => el.querySelector("[data-play]")?.dataset.play === x.id);
+  }
+  if (li) li.scrollIntoView({ block: "center", behavior: "smooth" });
+  try {
+    document.querySelectorAll(".play.on").forEach((b) => b.classList.remove("on"));
+    const btn = li?.querySelector("[data-play]");
+    if (btn) { btn.classList.add("on"); btn.textContent = "…"; }
+    await loadAndPlay(x);
+    if (btn) btn.textContent = "❚❚";
+    toast(`随机播放：${x.t} · ${x.a}`);
+  } catch (e) { toast("播放失败：" + e.message); }
+});
+
+$("shareBtn").addEventListener("click", async () => {
+  const url = location.href.split("?")[0];
+  const text = `909 首华语流行歌 MIDI，点开就能听、能下载：${url}`;
+  try {
+    if (navigator.share) { await navigator.share({ title: "华语流行歌 MIDI 曲库", text, url }); return; }
+    await navigator.clipboard.writeText(text);
+    toast("链接已复制，去粘贴吧");
+  } catch { toast(url); }
+});
+
+function toggleFav(id, ev) {
+  ev.stopPropagation();
+  const favs = getFavs();
+  if (favs.has(id)) favs.delete(id); else favs.add(id);
+  setFavs(favs);
+  ev.target.classList.toggle("on", favs.has(id));
+  ev.target.textContent = favs.has(id) ? "★" : "☆";
+  toast(favs.has(id) ? "已加入收藏" : "已取消收藏");
+}
 
 let timer;
 for (const id of ["q", "region", "artist", "sort"]) {
