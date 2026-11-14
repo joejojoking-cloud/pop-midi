@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>大陆与港澳流行歌 MIDI 索引 · 882 首</title>
+<meta name="description" content="大陆与港澳流行歌手热门曲目的 MIDI 索引，按歌手、地区、时长筛选，跳转源站下载。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="head-top">
+    <h1>大陆与港澳流行歌 MIDI 索引</h1>
+    <span class="count" id="count">载入中…</span>
+  </div>
+  <div class="search-row">
+    <input id="q" type="search" placeholder="搜索歌名或歌手，例如 海阔天空 / 陈奕迅 / 成都" autocomplete="off" spellcheck="false">
+  </div>
+  <div class="filters">
+    <select id="region">
+      <option value="">全部地区</option>
+      <option value="香港">香港</option>
+      <option value="大陆">大陆</option>
+    </select>
+    <select id="artist"><option value="">全部歌手</option></select>
+    <select id="dur">
+      <option value="">全部时长</option>
+      <option value="0-180">3 分钟以内</option>
+      <option value="180-240">3–4 分钟</option>
+      <option value="240-300">4–5 分钟</option>
+      <option value="300-9999">5 分钟以上</option>
+    </select>
+    <select id="sort">
+      <option value="dl">按下载量</option>
+      <option value="t">按歌名</option>
+      <option value="a">按歌手</option>
+      <option value="d">按时长</option>
+    </select>
+  </div>
+</header>
+
+<main>
+  <div class="bundle">
+    <span>MIDI 文件由 <a href="https://www.midishow.com/" target="_blank" rel="noopener">MidiShow</a> 提供，本站只做索引，不托管文件。</span>
+    <a href="https://www.midishow.com/user/account/register" target="_blank" rel="noopener">注册（送 5 积分，够下 1 首）→</a>
+  </div>
+  <ul id="list"></ul>
+  <div id="empty" class="empty" hidden>没有匹配的曲子，换个关键词试试。</div>
+  <div id="sentinel" class="sentinel"></div>
+</main>
+
+<footer>
+  <p>数据来源：MidiShow 曲库检索结果，共收录 28 位大陆与港澳歌手的 882 条 MIDI 条目，按下载量排序。</p>
+  <p>本站不含任何 MIDI 文件本体，点击条目跳转原站；原站下载消耗 3 积分/首，注册验证邮箱赠送 5 积分。MIDI 著作权归原曲作者与版权方，仅可用于个人学习参考。</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
